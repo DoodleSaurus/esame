@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to Esame di Stato</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Esame di Stato</h1>
+        <h2>18 Giugno 2025</h2>
+        
+        <!-- Timer including weekends -->
+        <div class="timer">
+            <h2>Con sabato e domenica</h2>
+            <h4>Giorno : Ore : Minuto : Secondo : Millisecondo</h4>
+            <div id="countdown-including">
+                <span id="days-inc">0</span> :
+                <span id="hours-inc">00</span> : 
+                <span id="minutes-inc">00</span> : 
+                <span id="seconds-inc">00</span> : 
+                <span id="milliseconds-inc">000</span>
+            </div>
+        </div>
+
+        <!-- Timer excluding weekends -->
+        <div class="timer">
+            <h2>Senza sabato e domenica</h2>
+            <h4>Giorno : Ore : Minuto : Secondo : Millisecondo</h4>
+            <div id="countdown-excluding">
+                <span id="days-exc">0</span> : 
+                <span id="hours-exc">00</span> : 
+                <span id="minutes-exc">00</span> : 
+                <span id="seconds-exc">00</span> : 
+                <span id="milliseconds-exc">000</span>
+            </div>
+        </div>
+
+        <!-- Calendar visualization 
+        <h2>Calendar Visualization</h2>
+        <div class="calendar" id="calendar"></div>-->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
