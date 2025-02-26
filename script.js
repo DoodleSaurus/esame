@@ -1,15 +1,25 @@
-// Utility function to calculate time difference and format it
 function calculateTimeDifference(targetDate, includeWeekends = true) {
     const now = new Date();
-    let timeRemaining = targetDate - now;
+    const cetOffset = 1 * 60 * 60 * 1000; // CET is UTC+1
+
+    // Convert both dates to CET time zone
+    const nowCET = new Date(now.getTime() + cetOffset);
+    const targetCET = new Date(targetDate.getTime() + cetOffset);
+
+    let timeRemaining = targetCET - nowCET;
 
     if (!includeWeekends) {
+        // Calculate the number of weekend days between now and the target date
         let weekendDays = 0;
+        let currentDate = new Date(nowCET);
 
-        for (let d = new Date(now); d < targetDate; d.setDate(d.getDate() + 1)) {
-            if (d.getDay() === 6 || d.getDay() === 0) {
+        // Loop through each day from now to the target date
+        while (currentDate < targetCET) {
+            // If the current day is Saturday (6) or Sunday (0), count it as a weekend day
+            if (currentDate.getDay() === 6 || currentDate.getDay() === 0) {
                 weekendDays++;
             }
+            currentDate.setDate(currentDate.getDate() + 1);
         }
         timeRemaining -= weekendDays * 24 * 60 * 60 * 1000;
     }
@@ -23,8 +33,7 @@ function calculateTimeDifference(targetDate, includeWeekends = true) {
     return { days, hours, minutes, seconds, milliseconds };
 }
 
-// Target date: June 18, 2025
-const targetDate = new Date('June 18, 2025 00:00:00');
+const targetDate = new Date('June 16, 2025 00:00:00 GMT+0100');
 
 // Timer update function
 function updateTimers() {
@@ -43,10 +52,8 @@ function updateTimers() {
     document.getElementById('milliseconds-exc').textContent = String(timeExcludingWeekends.milliseconds).padStart(3, '0');
 }
 
-// Update the timers every 10 milliseconds
 setInterval(updateTimers, 10);
 
-// Helper function to compare dates (without time)
 function isSameDay(date1, date2) {
     return (
         date1.getFullYear() === date2.getFullYear() &&
@@ -63,11 +70,10 @@ function generateCalendar(startDate, endDate) {
     while (currentDate <= endDate) {
         const dayDiv = document.createElement('div');
         dayDiv.textContent = currentDate.getDate();
-        dayDiv.dataset.date = currentDate.toISOString().split('T')[0]; // Store the date for updates
+        dayDiv.dataset.date = currentDate.toISOString().split('T')[0];
 
-        // Assign initial class based on whether the day is in the past or future
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Clear time for comparison
+        today.setHours(0, 0, 0, 0);
         if (currentDate < today) {
             dayDiv.classList.add('past');
         } else {
@@ -77,21 +83,6 @@ function generateCalendar(startDate, endDate) {
         calendarContainer.appendChild(dayDiv);
         currentDate.setDate(currentDate.getDate() + 1);
     }
-}
-
-// Update calendar dynamically
-function updateCalendar() {
-    const calendarDays = document.querySelectorAll('.calendar div');
-    const now = new Date();
-    now.setHours(0, 0, 0, 0); // Clear time for comparison
-
-    calendarDays.forEach(dayDiv => {
-        const divDate = new Date(dayDiv.dataset.date);
-        if (divDate < now && dayDiv.classList.contains('future')) {
-            dayDiv.classList.remove('future');
-            dayDiv.classList.add('past');
-        }
-    });
 }
 
 // Generate the calendar from September 9, 2023
