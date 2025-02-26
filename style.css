@@ -41,29 +41,55 @@ span {
     min-width: 50px;
 }
 
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-gap: 10px;
-    margin: 20px 0;
+.calendar-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.calendar div {
-    width: 40px;
-    height: 40px;
+.month-section {
+    margin-bottom: 40px;
+}
+
+.month-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.day-card {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 80px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    background-color: #f0f0f0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+.day-card:hover {
+    background-color: #e0e0e0;
 }
 
 .past {
-    background-color: #f2a9a9; /* Red for past days */
+    background-color: #f2a9a9; 
+}
+
+.current {
+    background-color: #a9e5a9; 
 }
 
 .future {
-    background-color: #a9e5a9; /* Green for future days */
+    background-color: #ffffff; 
+}
+
+.empty-day {
+    background-color: transparent; 
+    border: none; 
 }

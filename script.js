@@ -9,11 +9,9 @@ function calculateTimeDifference(targetDate, includeWeekends = true) {
     let timeRemaining = targetCET - nowCET;
 
     if (!includeWeekends) {
-        // Calculate the number of weekend days between now and the target date
         let weekendDays = 0;
         let currentDate = new Date(nowCET);
 
-        // Loop through each day from now to the target date
         while (currentDate < targetCET) {
             // If the current day is Saturday (6) or Sunday (0), count it as a weekend day
             if (currentDate.getDay() === 6 || currentDate.getDay() === 0) {
@@ -33,7 +31,7 @@ function calculateTimeDifference(targetDate, includeWeekends = true) {
     return { days, hours, minutes, seconds, milliseconds };
 }
 
-const targetDate = new Date('June 16, 2025 00:00:00 GMT+0100');
+const targetDate = new Date('June 18, 2025 00:00:00 GMT+0100');
 
 // Timer update function
 function updateTimers() {
@@ -54,6 +52,82 @@ function updateTimers() {
 
 setInterval(updateTimers, 10);
 
+// Calendar setup
+function generateCalendar(startDate, endDate) {
+    const calendarContainer = document.getElementById('calendar-container');
+    calendarContainer.innerHTML = ''; 
+
+    let currentDate = new Date(startDate);
+    let currentMonth = null;
+
+    while (currentDate <= endDate) {
+        if (currentDate.getMonth() !== currentMonth) {
+            currentMonth = currentDate.getMonth();
+
+            const monthSection = document.createElement('div');
+            monthSection.classList.add('month-section');
+
+            const monthHeader = document.createElement('div');
+            monthHeader.classList.add('month-header');
+            monthHeader.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+            monthSection.appendChild(monthHeader);
+
+            const calendarGrid = document.createElement('div');
+            calendarGrid.classList.add('calendar-grid', 'row', 'g-2');
+
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const startingDay = firstDayOfMonth.getDay(); 
+
+            // Check if the current month is June 2025
+            const isJune2025 = currentDate.getFullYear() === 2025 && currentDate.getMonth() === 5; // June is month 5 (0-indexed)
+            const totalDays = isJune2025 ? 18 : lastDayOfMonth.getDate(); // Only show up to June 18, 2025
+
+            for (let i = 0; i < startingDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.classList.add('day-card', 'empty-day', 'col');
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('day-card', 'col');
+                dayDiv.textContent = day;
+                dayDiv.dataset.date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day).toISOString().split('T')[0];
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const currentDayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                if (isSameDay(currentDayDate, today)) {
+                    dayDiv.classList.add('current'); 
+                } else if (currentDayDate < today) {
+                    dayDiv.classList.add('past'); 
+                } else {
+                    dayDiv.classList.add('future'); 
+                }
+
+                calendarGrid.appendChild(dayDiv);
+            }
+
+            const totalCells = 35; 
+            const filledCells = startingDay + totalDays;
+            const remainingCells = totalCells - filledCells;
+
+            for (let i = 0; i < remainingCells; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.classList.add('day-card', 'empty-day', 'col');
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            monthSection.appendChild(calendarGrid);
+            calendarContainer.appendChild(monthSection);
+        }
+
+        currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+}
+
 function isSameDay(date1, date2) {
     return (
         date1.getFullYear() === date2.getFullYear() &&
@@ -62,31 +136,6 @@ function isSameDay(date1, date2) {
     );
 }
 
-// Calendar setup
-function generateCalendar(startDate, endDate) {
-    const calendarContainer = document.getElementById('calendar');
-    let currentDate = new Date(startDate);
+generateCalendar(new Date('September 9, 2024'), targetDate);
 
-    while (currentDate <= endDate) {
-        const dayDiv = document.createElement('div');
-        dayDiv.textContent = currentDate.getDate();
-        dayDiv.dataset.date = currentDate.toISOString().split('T')[0];
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (currentDate < today) {
-            dayDiv.classList.add('past');
-        } else {
-            dayDiv.classList.add('future');
-        }
-
-        calendarContainer.appendChild(dayDiv);
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-}
-
-// Generate the calendar from September 9, 2023
-generateCalendar(new Date('September 9, 2023'), targetDate);
-
-// Update the calendar every minute to check for day change
-setInterval(updateCalendar, 60000);
+setInterval(() => generateCalendar(new Date('September 9, 2024'), targetDate), 60000);
